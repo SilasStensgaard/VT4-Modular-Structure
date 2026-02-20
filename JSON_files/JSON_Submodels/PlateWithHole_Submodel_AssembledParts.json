@@ -21,8 +21,8 @@
         
       "value" : [
         {
-          "modelType": "ReferenceElement",
-          "idShort": "Plate_Shell",
+          "modelType": "Property",
+          "idShort": "Plate_Shell_Id",
           "semanticId": {"type": "ExternalReference", "keys": [{"type": "GlobalReference", "value": "https://aausmartlab.com/References/Shells/Parts"}]},
           "description": [
             {
@@ -30,17 +30,8 @@
               "text": "Reference to the plate used in the product."
             }
           ],
-          "value": [
-            {
-              "type": "ModelReference",
-              "keys": [
-                {
-                  "type": "AssetAdministrationShell",
-                  "value": "https://aausmartlab.com/shells/Parts/Plate"
-                }
-      ]
-            }       
-          ] 
+          "valueType": "xs:string",
+          "value": "https://aausmartlab.com/aas/Parts/Plate/0129379862934723aisudh" 
         }
       ]
     }
