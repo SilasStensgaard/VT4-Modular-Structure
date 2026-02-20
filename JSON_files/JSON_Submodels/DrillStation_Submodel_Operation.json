@@ -49,31 +49,11 @@
               "semanticId": {"type": "ExternalReference", "keys": [{"type": "GlobalReference", "value": "https://aausmartlab.com/Units/MillimetersPerSecond"}]}
             },
             {
-              "modelType": "SubmodelElementCollection",
+              "modelType": "Property",
               "idShort": "DrillSize",
-              "value": [
-                {
-                  "modelType": "Property",
-                  "idShort": "3mm",
-                  "valueType": "xs:integer",
-                  "value": "3",
-                  "semanticId": {"type": "ExternalReference", "keys": [{"type": "GlobalReference", "value": "https://aausmartlab.com/Units/Millimeters"}]}
-                },
-                {
-                  "modelType": "Property",
-                  "idShort": "5mm",
-                  "valueType": "xs:integer",
-                  "value": "5",
-                  "semanticId": {"type": "ExternalReference", "keys": [{"type": "GlobalReference", "value": "https://aausmartlab.com/Units/Millimeters"}]}
-                },
-                {
-                  "modelType": "Property",
-                  "idShort": "9mm",
-                  "valueType": "xs:integer",
-                  "value": "9",
-                  "semanticId": {"type": "ExternalReference", "keys": [{"type": "GlobalReference", "value": "https://aausmartlab.com/Units/Millimeters"}]}
-                }
-              ]
+              "valueType": "xs:integer",
+              "value": "5",
+              "semanticId": {"type": "ExternalReference", "keys": [{"type": "GlobalReference", "value": "https://aausmartlab.com/Units/Millimeters"}]}
             },
             {
               "modelType": "Operation",

@@ -47,6 +47,15 @@ class ServerGUI:
         self.post_submodel_btn = tk.Button(root, text="Post Submodel", width=18, command=self.post_submodel)
         self.post_submodel_btn.place(x=200, y=80, width=120, height=40)
 
+        #Get Shells Button
+        self.get_shells_btn = tk.Button(root, text="Get Shells", width=18, command=self.get_shells)
+        self.get_shells_btn.place(x=700, y=40, width=120, height=40)
+
+        #Get Submodels Button
+        self.get_submodels_btn = tk.Button(root, text="Get Submodels", width=18, command=self.get_submodels)
+        self.get_submodels_btn.place(x=700, y=80, width=120, height=40)
+
+
         #============================File Dropboxes================================
 
         # --- Shell files dropdown ---
@@ -138,6 +147,15 @@ class ServerGUI:
         response = requests.post(SUBMODEL_ENDPOINT, json=data, headers={"Content-Type": "application/json"})
         self.append_terminal(f"Submodel POST ({selected_file}): {response.status_code}")
 
+    def get_shells(self):
+        self.append_terminal("Getting Shells")
+        response = requests.get(SHELL_ENDPOINT)
+        data = response.json()
+
+    def get_submodels(self):
+        self.append_terminal("Getting Submodels")
+        response = requests.get(SUBMODEL_ENDPOINT)
+
     def append_terminal(self, text):
         self.terminal_output.configure(state='normal')
         self.terminal_output.insert(tk.END, text + "\n")
@@ -152,6 +170,12 @@ app = ServerGUI(root)
 root.mainloop()
 
 
+
+#First it needs to be able to retrieve/get the identifiers for shells and submodels that are on the server
+#It is possible that it also needs to be able to refresh the GUIs values of what is on the server
+
+#delete shells and submodels
+#get shells and submodels
 
 
 
