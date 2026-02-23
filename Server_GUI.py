@@ -6,6 +6,7 @@ from tkinter.scrolledtext import ScrolledText
 from tkinter import ttk
 import json
 import requests
+import base64
 
 
 bash_path = r"C:\Program Files\Git\bin\bash.exe"
@@ -49,28 +50,53 @@ class ServerGUI:
 
         #Get Shells Button
         self.get_shells_btn = tk.Button(root, text="Get Shells", width=18, command=self.get_shells)
-        self.get_shells_btn.place(x=700, y=40, width=120, height=40)
+        self.get_shells_btn.place(x=300, y=140, width=120, height=40)
 
         #Get Submodels Button
         self.get_submodels_btn = tk.Button(root, text="Get Submodels", width=18, command=self.get_submodels)
-        self.get_submodels_btn.place(x=700, y=80, width=120, height=40)
+        self.get_submodels_btn.place(x=420, y=140, width=120, height=40)
+
+        #Get Shell Button
+        self.get_shells_btn = tk.Button(root, text="Get Shell", width=18, command=self.get_shell)
+        self.get_shells_btn.place(x=200, y=200, width=120, height=40)
+
+        #Get Submodel Button
+        self.get_submodels_btn = tk.Button(root, text="Get Submodel", width=18, command=self.get_submodel)
+        self.get_submodels_btn.place(x=200, y=240, width=120, height=40)
+
+
 
 
         #============================File Dropboxes================================
 
-        # --- Shell files dropdown ---
+        # --- Shell files dropdown (post)---
         self.shell_file_var = tk.StringVar(master=root)
         self.shell_files = ["Nothing Selected"] + [f for f in os.listdir(shell_folder) if f.endswith(".json")]
         self.shell_dropdown = ttk.Combobox(root,textvariable=self.shell_file_var,values=self.shell_files,state="readonly")
         self.shell_dropdown.place(x=320, y=40, width=300, height=40)
         self.shell_dropdown.current(0)
 
-        # --- Submodel files dropdown ---
+        # --- Submodel files dropdown (post)---
         self.submodel_file_var = tk.StringVar(master=root)
         self.submodel_files = ["Nothing Selected"] + [f for f in os.listdir(submodel_folder) if f.endswith(".json")]
         self.submodel_dropdown = ttk.Combobox(root,textvariable=self.submodel_file_var,values=self.submodel_files,state="readonly")
         self.submodel_dropdown.place(x=320, y=80, width=300, height=40)
         self.submodel_dropdown.current(0)
+
+        # --- Shell IDs dropdown (FROM SERVER) ---
+        self.shell_id_var = tk.StringVar(master=root)
+        self.shell_ids = ["Nothing Selected"]
+        self.shell_id_dropdown = ttk.Combobox(root,textvariable=self.shell_id_var,values=self.shell_ids,state="readonly")
+        self.shell_id_dropdown.place(x=320, y=200, width=300, height=40)
+        self.shell_id_dropdown.current(0)
+
+
+        # --- Submodel IDs dropdown (FROM SERVER) ---
+        self.submodel_id_var = tk.StringVar(master=root)
+        self.submodel_ids = ["Nothing Selected"]
+        self.submodel_id_dropdown = ttk.Combobox(root,textvariable=self.submodel_id_var,values=self.submodel_ids,state="readonly")
+        self.submodel_id_dropdown.place(x=320, y=240, width=300, height=40)
+        self.submodel_id_dropdown.current(0)
 
         #============================Misc============================================
 
@@ -78,7 +104,7 @@ class ServerGUI:
         self.root.protocol("WM_DELETE_WINDOW", self.on_close)
 
         self.terminal_output = ScrolledText(root, state='disabled', width=120, height=20)
-        self.terminal_output.place(x=50, y=180, width=400, height=200)
+        self.terminal_output.place(x=50, y=300, width=400, height=200)
 
     #=======================================GUI Functions================================0
 
@@ -151,10 +177,33 @@ class ServerGUI:
         self.append_terminal("Getting Shells")
         response = requests.get(SHELL_ENDPOINT)
         data = response.json()
+        shells = data.get("result", [])
+        self.shell_ids = ["Nothing Selected"] + [shell["id"] for shell in shells]
+        self.shell_id_dropdown["values"] = self.shell_ids
+        self.shell_id_dropdown.current(0)
 
     def get_submodels(self):
         self.append_terminal("Getting Submodels")
         response = requests.get(SUBMODEL_ENDPOINT)
+        data = response.json()
+        submodels = data.get("result", [])
+        self.submodel_ids = ["Nothing Selected"] + [submodel["id"] for submodel in submodels]
+        self.submodel_id_dropdown["values"] = self.submodel_ids
+        self.submodel_id_dropdown.current(0)
+
+    def get_shell(self):
+        self.append_terminal("Getting Single Shell")
+        self.encoded_shell_id = self.base64encode(self.shell_id_var.get())
+        response = requests.get(f"{SHELL_ENDPOINT}/{self.encoded_shell_id}")
+        data = response.json()
+        print(data)
+
+    def get_submodel(self):
+        self.append_terminal("Getting Single Submodel")
+        self.encoded_submodel_id = self.base64encode(self.submodel_id_var.get())
+        response = requests.get(f"{SUBMODEL_ENDPOINT}/{self.encoded_submodel_id}")
+        data = response.json()
+        print(data)
 
     def append_terminal(self, text):
         self.terminal_output.configure(state='normal')
@@ -162,26 +211,15 @@ class ServerGUI:
         self.terminal_output.see(tk.END)  # scroll to the end
         self.terminal_output.configure(state='disabled')
 
+    def base64encode(self, value: str):
+        encoded = base64.urlsafe_b64encode(value.encode("utf-8")).decode("ascii")
+        encoded = encoded.rstrip("=")  # remove padding if server expects that
+        print(f"Printing encoded string: {encoded}")
+        return encoded
+
 root = tk.Tk()
 root.title("AAS Server Controller")
-root.geometry("1000x500")        # width x height
-root.resizable(False, False)
+root.geometry("760x780")        # width x height
+root.resizable(True, True)
 app = ServerGUI(root)
 root.mainloop()
-
-
-
-#First it needs to be able to retrieve/get the identifiers for shells and submodels that are on the server
-#It is possible that it also needs to be able to refresh the GUIs values of what is on the server
-
-#delete shells and submodels
-#get shells and submodels
-
-
-
-
-
-
-
-
-
